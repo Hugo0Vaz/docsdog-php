@@ -427,7 +427,7 @@ test('fromArray round-trip', function () {
 });
 
 test('load scan-example.json and verify structure', function () {
-    $json = file_get_contents(__DIR__ . '/../docsdog-spec/scan-example.json');
+    $json = file_get_contents(__DIR__ . '/test-fixtures/scan-example.json');
     $scan = Scan::fromJson($json);
 
     assert($scan->version() === '1.0');
@@ -462,7 +462,7 @@ test('load scan-example.json and verify structure', function () {
 });
 
 test('json round-trip preserves exact content', function () {
-    $json = file_get_contents(__DIR__ . '/../docsdog-spec/scan-example.json');
+    $json = file_get_contents(__DIR__ . '/test-fixtures/scan-example.json');
     $scan = Scan::fromJson($json);
 
     $originalData = json_decode($json, true);

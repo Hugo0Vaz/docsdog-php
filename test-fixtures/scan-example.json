@@ -1,0 +1,25 @@
+{
+    "version": "1.0",
+    "relationships": [
+        {
+            "source": "php://src/Application/CreateInvoiceService.php#L12",
+            "predicate": "implements",
+            "target": "docref:usecase:UC-001"
+        },
+        {
+            "source": "php://src/Application/CreateInvoiceService.php#L25",
+            "predicate": "requires",
+            "target": "docref:requirement:REQ-014"
+        },
+        {
+            "source": "php://src/Application/CreateInvoiceService.php#L51",
+            "predicate": "validates",
+            "target": "docref:rule:BR-008"
+        },
+        {
+            "source": "php://src/Application/CreateInvoiceService.php#L63:C17",
+            "predicate": "emits",
+            "target": "docref:event:InvoiceCreated"
+        }
+    ]
+}

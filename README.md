@@ -1,6 +1,6 @@
 # DocsDog PHP
 
-PHP implementation of the [DocDog specification](../docsdog-spec/specification.md).
+PHP implementation of the [DocDog specification](https://github.com/Hugo0Vaz/docsdog).
 
 ## Installation
 
@@ -92,7 +92,7 @@ php vendor/bin/docdog scan --src=src | your-tool
 
 ## Output Format
 
-The scanner produces a JSON document conforming to the [scan schema](../docsdog-spec/scan.schema.json):
+The scanner produces a JSON document conforming to the [scan schema](https://github.com/Hugo0Vaz/docsdog/blob/main/scan.schema.json):
 
 ```json
 {
