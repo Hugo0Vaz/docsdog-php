@@ -7,13 +7,13 @@ namespace App\Infrastructure;
 /**
  * HTTP controller for invoice endpoints.
  *
- * @docdog exposes docdog:api:POST:/invoices
- * @docdog secured-by docdog:rule:SEC-001
+ * @docsdog exposes docsdog:api:POST:/invoices
+ * @docsdog secured-by docsdog:rule:SEC-001
  */
 final class InvoiceController
 {
     /**
-     * @docdog consumes docdog:command:CreateInvoice
+     * @docsdog consumes docsdog:command:CreateInvoice
      */
     public function __invoke(): void {}
 }

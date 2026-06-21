@@ -10,11 +10,11 @@ use Docsdog\DocsdogPhp\Model\Relationship;
 use Docsdog\DocsdogPhp\Predicate;
 
 /**
- * Scans a single PHP file and extracts @docdog annotations from docblocks.
+ * Scans a single PHP file and extracts @docsdog annotations from docblocks.
  *
  * Each annotation line follows the format:
  *
- *   @docdog <predicate> <target>
+ *   @docsdog <predicate> <target>
  *
  * The scanner associates each annotation with the code element
  * (class, method, function, interface, trait, enum) that the docblock
@@ -23,7 +23,7 @@ use Docsdog\DocsdogPhp\Predicate;
 final class PhpFileScanner
 {
     /**
-     * Scan a PHP file and return all discovered DocDog relationships.
+     * Scan a PHP file and return all discovered DocsDog relationships.
      *
      * @return Relationship[]
      */
@@ -55,12 +55,12 @@ final class PhpFileScanner
 
             $docblock = $tokens[$i][1];
 
-            // Skip docblocks without @docdog annotations
-            if (! \str_contains($docblock, '@docdog')) {
+            // Skip docblocks without @docsdog annotations
+            if (! \str_contains($docblock, '@docsdog')) {
                 continue;
             }
 
-            $annotations = $this->parseDocDogAnnotations($docblock);
+            $annotations = $this->parseDocsDogAnnotations($docblock);
 
             if ($annotations === []) {
                 continue;
@@ -98,18 +98,18 @@ final class PhpFileScanner
     }
 
     /**
-     * Parse @docdog annotations from a docblock string.
+     * Parse @docsdog annotations from a docblock string.
      *
-     * Each annotation line: @docdog <predicate> <target>
+     * Each annotation line: @docsdog <predicate> <target>
      *
      * @return list<array{predicate: string, target: string}>
      */
-    private function parseDocDogAnnotations(string $docblock): array
+    private function parseDocsDogAnnotations(string $docblock): array
     {
         $annotations = [];
 
         if (\preg_match_all(
-            '/^\s*\*\s*@docdog\s+(?P<predicate>[a-z][a-z0-9-]*)\s+(?P<target>[a-z][a-z0-9-]*:[a-z][a-z0-9-]*:.+)\s*$/m',
+            '/^\s*\*\s*@docsdog\s+(?P<predicate>[a-z][a-z0-9-]*)\s+(?P<target>[a-z][a-z0-9-]*:[a-z][a-z0-9-]*:.+)\s*$/m',
             $docblock,
             $matches,
             \PREG_SET_ORDER,
@@ -141,7 +141,7 @@ final class PhpFileScanner
     {
         $count = \count($tokens);
 
-        // Declaration tokens we recognize as DocDog source elements
+        // Declaration tokens we recognize as DocsDog source elements
         $declarationTokens = [
             \T_CLASS,
             \T_FUNCTION,

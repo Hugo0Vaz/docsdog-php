@@ -1,6 +1,6 @@
 # DocsDog PHP
 
-PHP implementation of the [DocDog specification](https://github.com/Hugo0Vaz/docsdog).
+PHP implementation of the [DocsDog specification](https://github.com/Hugo0Vaz/docsdog).
 
 ## Installation
 
@@ -10,10 +10,10 @@ composer require docsdog/docsdog-php
 
 ## Annotation Format
 
-Relationships are declared inside PHP docblocks using the `@docdog` annotation:
+Relationships are declared inside PHP docblocks using the `@docsdog` annotation:
 
 ```
-@docdog <predicate> <namespace>:<kind>:<identifier>
+@docsdog <predicate> <namespace>:<kind>:<identifier>
 ```
 
 Example:
@@ -22,13 +22,13 @@ Example:
 /**
  * Handles creation of invoices from purchase orders.
  *
- * @docdog implements docdog:usecase:UC-001
- * @docdog decision docdog:adr:ADR-004
+ * @docsdog implements docsdog:usecase:UC-001
+ * @docsdog decision docsdog:adr:ADR-004
  */
 final class CreateInvoiceService
 {
     /**
-     * @docdog requires docdog:requirement:REQ-014
+     * @docsdog requires docsdog:requirement:REQ-014
      */
     public function __construct(
         private readonly InvoiceRepository $repository,
@@ -36,7 +36,7 @@ final class CreateInvoiceService
     ) {}
 
     /**
-     * @docdog validates docdog:rule:BR-008
+     * @docsdog validates docsdog:rule:BR-008
      */
     public function execute(CreateInvoiceCommand $command): Invoice
     {
@@ -46,7 +46,7 @@ final class CreateInvoiceService
     }
 
     /**
-     * @docdog emits docdog:event:InvoiceCreated
+     * @docsdog emits docsdog:event:InvoiceCreated
      */
     private function dispatchEvents(Invoice $invoice): void
     {
@@ -64,7 +64,7 @@ docblock are supported.
 ## CLI
 
 ```bash
-php vendor/bin/docdog scan [options]
+php vendor/bin/docsdog scan [options]
 ```
 
 ### Options
@@ -81,13 +81,13 @@ php vendor/bin/docdog scan [options]
 
 ```bash
 # Scan src/ directory, write to file with pretty output
-php vendor/bin/docdog scan --src=src --output=docdog-scan.json --pretty
+php vendor/bin/docsdog scan --src=src --output=docsdog-scan.json --pretty
 
 # Scan app/ directory, print to stdout
-php vendor/bin/docdog scan --src=app
+php vendor/bin/docsdog scan --src=app
 
 # Pipe into another tool
-php vendor/bin/docdog scan --src=src | your-tool
+php vendor/bin/docsdog scan --src=src | your-tool
 ```
 
 ## Output Format
@@ -101,12 +101,12 @@ The scanner produces a JSON document conforming to the [scan schema](https://git
     {
       "source": "php://src/Application/CreateInvoiceService.php#L13",
       "predicate": "implements",
-      "target": "docdog:usecase:UC-001"
+      "target": "docsdog:usecase:UC-001"
     },
     {
       "source": "php://src/Application/CreateInvoiceService.php#L13",
       "predicate": "decision",
-      "target": "docdog:adr:ADR-004"
+      "target": "docsdog:adr:ADR-004"
     }
   ]
 }
@@ -125,14 +125,14 @@ $relationships = $scanner->scan('src/Application/CreateInvoiceService.php');
 foreach ($relationships as $rel) {
     echo $rel->source()->toString();   // php://src/...php#L13
     echo $rel->predicate()->value;     // implements
-    echo $rel->target()->toString();   // docdog:usecase:UC-001
+    echo $rel->target()->toString();   // docsdog:usecase:UC-001
 }
 ```
 
 ### Building relationships manually
 
 ```php
-use Docsdog\DocsdogPhp\Identifier\DocDogNamespace;
+use Docsdog\DocsdogPhp\Identifier\DocsDogNamespace;
 use Docsdog\DocsdogPhp\Identifier\SourceIdentifier;
 use Docsdog\DocsdogPhp\Identifier\TargetIdentifier;
 use Docsdog\DocsdogPhp\Model\Relationship;
@@ -142,7 +142,7 @@ use Docsdog\DocsdogPhp\Predicate;
 $rel = Relationship::create(
     SourceIdentifier::parse('php://src/Service.php#L42'),
     Predicate::implements(),
-    DocDogNamespace::usecase('UC-001'),
+    DocsDogNamespace::usecase('UC-001'),
     ['since' => '2.1'], // optional metadata
 );
 
@@ -153,13 +153,13 @@ echo $scan->toJson(JSON_PRETTY_PRINT);
 ### Working with identifiers
 
 ```php
-use Docsdog\DocsdogPhp\Identifier\DocDogNamespace;
+use Docsdog\DocsdogPhp\Identifier\DocsDogNamespace;
 use Docsdog\DocsdogPhp\Identifier\TargetIdentifier;
 
-// Built-in docdog namespace (typed helpers)
-$t1 = DocDogNamespace::requirement('REQ-014');    // docdog:requirement:REQ-014
-$t2 = DocDogNamespace::api('post', '/invoices');   // docdog:api:POST:/invoices
-$t3 = DocDogNamespace::table('invoices');          // docdog:table:invoices
+// Built-in docsdog namespace (typed helpers)
+$t1 = DocsDogNamespace::requirement('REQ-014');    // docsdog:requirement:REQ-014
+$t2 = DocsDogNamespace::api('post', '/invoices');   // docsdog:api:POST:/invoices
+$t3 = DocsDogNamespace::table('invoices');          // docsdog:table:invoices
 
 // External namespaces (generic parser)
 $t4 = TargetIdentifier::parse('jira:issue:ERP-123');

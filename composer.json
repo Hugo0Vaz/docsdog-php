@@ -16,6 +16,6 @@
     ],
     "require": {},
     "bin": [
-        "bin/docdog"
+        "bin/docsdog"
     ]
 }

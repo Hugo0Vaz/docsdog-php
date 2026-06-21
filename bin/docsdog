@@ -4,13 +4,13 @@
 declare(strict_types=1);
 
 /**
- * DocDog CLI — scans PHP source directories for @docdog annotations
- * and produces a scan JSON file consumable by external DocDog tooling.
+ * DocsDog CLI — scans PHP source directories for @docsdog annotations
+ * and produces a scan JSON file consumable by external DocsDog tooling.
  *
  * Usage:
- *   php bin/docdog scan [--src=<dir>] [--output=<file>] [--pretty]
+ *   php bin/docsdog scan [--src=<dir>] [--output=<file>] [--pretty]
  *
- * The output is a valid DocDog scan document per scan.schema.json.
+ * The output is a valid DocsDog scan document per scan.schema.json.
  */
 
 // ── Bootstrap ──────────────────────────────────────────────
@@ -71,10 +71,10 @@ function parseArgs(array $argv): array
 function showHelp(): void
 {
     echo <<<HELP
-DocDog CLI — scan PHP code for @docdog annotations.
+DocsDog CLI — scan PHP code for @docsdog annotations.
 
 Usage:
-  php bin/docdog scan [options]
+  php bin/docsdog scan [options]
 
 Options:
   --src=<dir>      Source directory to scan (default: src)
@@ -87,12 +87,12 @@ Annotation format (in PHP docblocks):
   /**
    * Brief description.
    *
-   * @docdog <predicate> <namespace>:<kind>:<identifier>
+   * @docsdog <predicate> <namespace>:<kind>:<identifier>
    */
 
 Examples:
-  php bin/docdog scan --src=app --output=docdog-scan.json --pretty
-  php bin/docdog scan --src=src/Application > scan.json
+  php bin/docsdog scan --src=app --output=docsdog-scan.json --pretty
+  php bin/docsdog scan --src=src/Application > scan.json
 
 HELP;
 }

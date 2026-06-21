@@ -5,7 +5,7 @@ declare(strict_types=1);
 require __DIR__ . '/vendor/autoload.php';
 
 use Docsdog\DocsdogPhp\Exception\ValidationException;
-use Docsdog\DocsdogPhp\Identifier\DocDogNamespace;
+use Docsdog\DocsdogPhp\Identifier\DocsDogNamespace;
 use Docsdog\DocsdogPhp\Identifier\SourceIdentifier;
 use Docsdog\DocsdogPhp\Identifier\TargetIdentifier;
 use Docsdog\DocsdogPhp\Model\Relationship;
@@ -125,12 +125,12 @@ test('jsonSerialize returns string', function () {
 
 echo "\n── TargetIdentifier ──\n";
 
-test('parse docdog target', function () {
-    $t = TargetIdentifier::parse('docdog:usecase:UC-001');
-    assert($t->namespace() === 'docdog');
+test('parse docsdog target', function () {
+    $t = TargetIdentifier::parse('docsdog:usecase:UC-001');
+    assert($t->namespace() === 'docsdog');
     assert($t->kind() === 'usecase');
     assert($t->identifier() === 'UC-001');
-    assert($t->isDocDog());
+    assert($t->isDocsDog());
 });
 
 test('parse external namespace (jira)', function () {
@@ -138,7 +138,7 @@ test('parse external namespace (jira)', function () {
     assert($t->namespace() === 'jira');
     assert($t->kind() === 'issue');
     assert($t->identifier() === 'ERP-123');
-    assert(! $t->isDocDog());
+    assert(! $t->isDocsDog());
 });
 
 test('parse github-like target', function () {
@@ -149,7 +149,7 @@ test('parse github-like target', function () {
 });
 
 test('round-trip toString', function () {
-    $original = 'docdog:event:InvoiceCreated';
+    $original = 'docsdog:event:InvoiceCreated';
     assert((string) TargetIdentifier::parse($original) === $original);
 });
 
@@ -159,11 +159,11 @@ test('fromParts factory', function () {
 });
 
 test('rejects uppercase namespace', function () {
-    assert_throws(fn () => TargetIdentifier::parse('DocDog:usecase:UC-001'), ValidationException::class);
+    assert_throws(fn () => TargetIdentifier::parse('DocsDog:usecase:UC-001'), ValidationException::class);
 });
 
 test('rejects only 2 parts', function () {
-    assert_throws(fn () => TargetIdentifier::parse('docdog:usecase'), ValidationException::class);
+    assert_throws(fn () => TargetIdentifier::parse('docsdog:usecase'), ValidationException::class);
 });
 
 test('rejects empty string', function () {
@@ -175,54 +175,54 @@ test('rejects namespace starting with number', function () {
 });
 
 test('jsonSerialize returns string', function () {
-    $t = TargetIdentifier::parse('docdog:usecase:UC-001');
-    assert(json_encode($t) === '"docdog:usecase:UC-001"');
+    $t = TargetIdentifier::parse('docsdog:usecase:UC-001');
+    assert(json_encode($t) === '"docsdog:usecase:UC-001"');
 });
 
 // ═══════════════════════════════════════════════════════════
-// DocDogNamespace helpers
+// DocsDogNamespace helpers
 // ═══════════════════════════════════════════════════════════
 
-echo "\n── DocDogNamespace ──\n";
+echo "\n── DocsDogNamespace ──\n";
 
 test('usecase helper', function () {
-    $t = DocDogNamespace::usecase('UC-001');
-    assert((string) $t === 'docdog:usecase:UC-001');
+    $t = DocsDogNamespace::usecase('UC-001');
+    assert((string) $t === 'docsdog:usecase:UC-001');
 });
 
 test('event helper', function () {
-    $t = DocDogNamespace::event('InvoiceCreated');
-    assert((string) $t === 'docdog:event:InvoiceCreated');
+    $t = DocsDogNamespace::event('InvoiceCreated');
+    assert((string) $t === 'docsdog:event:InvoiceCreated');
 });
 
 test('table helper', function () {
-    $t = DocDogNamespace::table('invoices');
-    assert((string) $t === 'docdog:table:invoices');
+    $t = DocsDogNamespace::table('invoices');
+    assert((string) $t === 'docsdog:table:invoices');
 });
 
 test('api helper formats method:path', function () {
-    $t = DocDogNamespace::api('post', '/invoices');
-    assert((string) $t === 'docdog:api:POST:/invoices');
+    $t = DocsDogNamespace::api('post', '/invoices');
+    assert((string) $t === 'docsdog:api:POST:/invoices');
 });
 
 test('requirement helper', function () {
-    $t = DocDogNamespace::requirement('REQ-014');
-    assert((string) $t === 'docdog:requirement:REQ-014');
+    $t = DocsDogNamespace::requirement('REQ-014');
+    assert((string) $t === 'docsdog:requirement:REQ-014');
 });
 
 test('adr helper', function () {
-    $t = DocDogNamespace::adr('ADR-004');
-    assert((string) $t === 'docdog:adr:ADR-004');
+    $t = DocsDogNamespace::adr('ADR-004');
+    assert((string) $t === 'docsdog:adr:ADR-004');
 });
 
 test('queue helper', function () {
-    $t = DocDogNamespace::queue('payments');
-    assert((string) $t === 'docdog:queue:payments');
+    $t = DocsDogNamespace::queue('payments');
+    assert((string) $t === 'docsdog:queue:payments');
 });
 
 test('rfc helper', function () {
-    $t = DocDogNamespace::rfc('RFC-9110');
-    assert((string) $t === 'docdog:rfc:RFC-9110');
+    $t = DocsDogNamespace::rfc('RFC-9110');
+    assert((string) $t === 'docsdog:rfc:RFC-9110');
 });
 
 // ═══════════════════════════════════════════════════════════
@@ -291,7 +291,7 @@ test('create basic relationship', function () {
     $rel = Relationship::create(
         SourceIdentifier::parse('php://src/Foo.php#L12'),
         Predicate::implements(),
-        TargetIdentifier::parse('docdog:usecase:UC-001'),
+        TargetIdentifier::parse('docsdog:usecase:UC-001'),
     );
 
     assert($rel->source()->line() === 12);
@@ -304,7 +304,7 @@ test('create with metadata', function () {
     $rel = Relationship::create(
         SourceIdentifier::parse('php://src/Foo.php#L25'),
         Predicate::requires(),
-        TargetIdentifier::parse('docdog:requirement:REQ-014'),
+        TargetIdentifier::parse('docsdog:requirement:REQ-014'),
         ['since' => '2.1', 'critical' => true, 'tags' => ['payments', 'security']],
     );
 
@@ -318,21 +318,21 @@ test('toArray without metadata', function () {
     $rel = Relationship::create(
         SourceIdentifier::parse('php://src/Foo.php#L1'),
         Predicate::tests(),
-        TargetIdentifier::parse('docdog:usecase:UC-002'),
+        TargetIdentifier::parse('docsdog:usecase:UC-002'),
     );
 
     $arr = $rel->toArray();
     assert(! isset($arr['metadata']));
     assert($arr['source'] === 'php://src/Foo.php#L1');
     assert($arr['predicate'] === 'tests');
-    assert($arr['target'] === 'docdog:usecase:UC-002');
+    assert($arr['target'] === 'docsdog:usecase:UC-002');
 });
 
 test('toArray with metadata', function () {
     $rel = Relationship::create(
         SourceIdentifier::parse('php://src/Foo.php#L1'),
         Predicate::dependsOn(),
-        TargetIdentifier::parse('docdog:entity:Customer'),
+        TargetIdentifier::parse('docsdog:entity:Customer'),
         ['since' => '2.1'],
     );
 
@@ -345,7 +345,7 @@ test('fromArray round-trip', function () {
     $original = [
         'source' => 'php://src/Foo.php#L12',
         'predicate' => 'implements',
-        'target' => 'docdog:usecase:UC-001',
+        'target' => 'docsdog:usecase:UC-001',
         'metadata' => ['author' => 'Architecture Team'],
     ];
 
@@ -357,32 +357,32 @@ test('jsonSerialize structure', function () {
     $rel = Relationship::create(
         SourceIdentifier::parse('php://src/Application/CreateInvoiceService.php#L12'),
         Predicate::implements(),
-        TargetIdentifier::parse('docdog:usecase:UC-001'),
+        TargetIdentifier::parse('docsdog:usecase:UC-001'),
     );
 
     $decoded = json_decode(json_encode($rel), true);
     assert($decoded['source'] === 'php://src/Application/CreateInvoiceService.php#L12');
     assert($decoded['predicate'] === 'implements');
-    assert($decoded['target'] === 'docdog:usecase:UC-001');
+    assert($decoded['target'] === 'docsdog:usecase:UC-001');
 });
 
 test('fromArray rejects missing source', function () {
     assert_throws(
-        fn () => Relationship::fromArray(['predicate' => 'implements', 'target' => 'docdog:usecase:UC-001']),
+        fn () => Relationship::fromArray(['predicate' => 'implements', 'target' => 'docsdog:usecase:UC-001']),
         \InvalidArgumentException::class,
     );
 });
 
 test('fromArray validates bad source', function () {
     assert_throws(
-        fn () => Relationship::fromArray(['source' => 'invalid', 'predicate' => 'implements', 'target' => 'docdog:usecase:UC-001']),
+        fn () => Relationship::fromArray(['source' => 'invalid', 'predicate' => 'implements', 'target' => 'docsdog:usecase:UC-001']),
         ValidationException::class,
     );
 });
 
 test('fromArray validates bad predicate', function () {
     assert_throws(
-        fn () => Relationship::fromArray(['source' => 'php://src/file.php#L1', 'predicate' => 'INVALID', 'target' => 'docdog:usecase:UC-001']),
+        fn () => Relationship::fromArray(['source' => 'php://src/file.php#L1', 'predicate' => 'INVALID', 'target' => 'docsdog:usecase:UC-001']),
         ValidationException::class,
     );
 });
@@ -415,8 +415,8 @@ test('fromArray round-trip', function () {
     $data = [
         'version' => '1.0',
         'relationships' => [
-            ['source' => 'php://src/A.php#L1', 'predicate' => 'implements', 'target' => 'docdog:usecase:UC-001'],
-            ['source' => 'php://src/B.php#L2', 'predicate' => 'emits', 'target' => 'docdog:event:X'],
+            ['source' => 'php://src/A.php#L1', 'predicate' => 'implements', 'target' => 'docsdog:usecase:UC-001'],
+            ['source' => 'php://src/B.php#L2', 'predicate' => 'emits', 'target' => 'docsdog:event:X'],
         ],
     ];
 
@@ -435,26 +435,26 @@ test('load scan-example.json and verify structure', function () {
 
     $rels = $scan->relationships();
 
-    // Relationship 1: implements docref:usecase:UC-001
+    // Relationship 1: implements docsdog:usecase:UC-001
     assert($rels[0]->source()->path() === 'src/Application/CreateInvoiceService.php');
     assert($rels[0]->source()->line() === 12);
     assert($rels[0]->source()->column() === null);
     assert($rels[0]->predicate()->value === 'implements');
-    assert($rels[0]->target()->namespace() === 'docref');
+    assert($rels[0]->target()->namespace() === 'docsdog');
     assert($rels[0]->target()->kind() === 'usecase');
     assert($rels[0]->target()->identifier() === 'UC-001');
 
-    // Relationship 2: requires docref:requirement:REQ-014
+    // Relationship 2: requires docsdog:requirement:REQ-014
     assert($rels[1]->source()->line() === 25);
     assert($rels[1]->predicate()->value === 'requires');
     assert($rels[1]->target()->identifier() === 'REQ-014');
 
-    // Relationship 3: validates docref:rule:BR-008
+    // Relationship 3: validates docsdog:rule:BR-008
     assert($rels[2]->source()->line() === 51);
     assert($rels[2]->predicate()->value === 'validates');
     assert($rels[2]->target()->identifier() === 'BR-008');
 
-    // Relationship 4: emits docref:event:InvoiceCreated (with column)
+    // Relationship 4: emits docsdog:event:InvoiceCreated (with column)
     assert($rels[3]->source()->line() === 63);
     assert($rels[3]->source()->column() === 17);
     assert($rels[3]->predicate()->value === 'emits');
@@ -475,7 +475,7 @@ test('metadata round-trip through scan', function () {
     $rel = Relationship::create(
         SourceIdentifier::parse('php://src/X.php#L1'),
         Predicate::featureFlag(),
-        TargetIdentifier::parse('docdog:requirement:REQ-001'),
+        TargetIdentifier::parse('docsdog:requirement:REQ-001'),
         ['since' => '3.0', 'tags' => ['beta']],
     );
 
@@ -521,22 +521,22 @@ test('full spec example', function () {
         Relationship::create(
             SourceIdentifier::parse("php://{$file}#L12"),
             Predicate::implements(),
-            DocDogNamespace::usecase('UC-001'),
+            DocsDogNamespace::usecase('UC-001'),
         ),
         Relationship::create(
             SourceIdentifier::parse("php://{$file}#L25"),
             Predicate::requires(),
-            DocDogNamespace::requirement('REQ-014'),
+            DocsDogNamespace::requirement('REQ-014'),
         ),
         Relationship::create(
             SourceIdentifier::parse("php://{$file}#L51"),
             Predicate::decision(),
-            DocDogNamespace::adr('ADR-004'),
+            DocsDogNamespace::adr('ADR-004'),
         ),
         Relationship::create(
             SourceIdentifier::parse("php://{$file}#L63:C17"),
             Predicate::emits(),
-            DocDogNamespace::event('InvoiceCreated'),
+            DocsDogNamespace::event('InvoiceCreated'),
         ),
     ];
 
@@ -560,7 +560,7 @@ test('external namespaces example', function () {
         Relationship::create(
             SourceIdentifier::parse('php://src/Service.php#L95'),
             Predicate::persists(),
-            TargetIdentifier::parse('docdog:table:invoices'),
+            TargetIdentifier::parse('docsdog:table:invoices'),
         ),
         Relationship::create(
             SourceIdentifier::parse('php://src/Handler.php#L10'),
@@ -603,21 +603,21 @@ test('scans CreateInvoiceService.php (5 relationships)', function () use ($scann
 
     // Class-level annotations
     assert($rels[0]->predicate()->value === 'implements');
-    assert((string) $rels[0]->target() === 'docdog:usecase:UC-001');
+    assert((string) $rels[0]->target() === 'docsdog:usecase:UC-001');
     assert($rels[1]->predicate()->value === 'decision');
-    assert((string) $rels[1]->target() === 'docdog:adr:ADR-004');
+    assert((string) $rels[1]->target() === 'docsdog:adr:ADR-004');
 
     // Constructor
     assert($rels[2]->predicate()->value === 'requires');
-    assert((string) $rels[2]->target() === 'docdog:requirement:REQ-014');
+    assert((string) $rels[2]->target() === 'docsdog:requirement:REQ-014');
 
     // execute method
     assert($rels[3]->predicate()->value === 'validates');
-    assert((string) $rels[3]->target() === 'docdog:rule:BR-008');
+    assert((string) $rels[3]->target() === 'docsdog:rule:BR-008');
 
     // dispatchEvents method
     assert($rels[4]->predicate()->value === 'emits');
-    assert((string) $rels[4]->target() === 'docdog:event:InvoiceCreated');
+    assert((string) $rels[4]->target() === 'docsdog:event:InvoiceCreated');
 });
 
 test('scans Invoice.php (3 relationships)', function () use ($scanner, $fixturesDir) {
@@ -634,13 +634,13 @@ test('scans InvoiceController.php (3 relationships)', function () use ($scanner,
     assert(count($rels) === 3);
 
     assert($rels[0]->predicate()->value === 'exposes');
-    assert((string) $rels[0]->target() === 'docdog:api:POST:/invoices');
+    assert((string) $rels[0]->target() === 'docsdog:api:POST:/invoices');
     assert($rels[1]->predicate()->value === 'secured-by');
     assert($rels[2]->predicate()->value === 'consumes');
 });
 
 test('empty file returns no relationships', function () use ($scanner, $fixturesDir) {
-    $emptyFile = sys_get_temp_dir() . '/docdog-empty.php';
+    $emptyFile = sys_get_temp_dir() . '/docsdog-empty.php';
     file_put_contents($emptyFile, '<?php // no annotations');
     $rels = $scanner->scan($emptyFile);
     assert(count($rels) === 0);
@@ -680,13 +680,13 @@ test('scanner output produces valid Scan', function () use ($scanner, $fixturesD
 });
 
 test('skips malformed annotations gracefully', function () use ($scanner, $fixturesDir) {
-    $badFile = sys_get_temp_dir() . '/docdog-bad.php';
+    $badFile = sys_get_temp_dir() . '/docsdog-bad.php';
     file_put_contents($badFile, <<<'PHP'
 <?php
 
 /**
- * @docdog INVALID_PREDICATE docdog:usecase:UC-001
- * @docdog implements bad-target
+ * @docsdog INVALID_PREDICATE docsdog:usecase:UC-001
+ * @docsdog implements bad-target
  */
 class BadService {}
 PHP

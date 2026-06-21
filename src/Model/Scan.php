@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Docsdog\DocsdogPhp\Model;
 
 /**
- * Immutable value object representing a complete DocDog scan result.
+ * Immutable value object representing a complete DocsDog scan result.
  *
  * A Scan is the top-level container for a set of relationships,
  * tagged with a version string. It maps directly to the scan.schema.json format.

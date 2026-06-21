@@ -7,13 +7,13 @@ namespace App\Domain;
 /**
  * Core invoice entity.
  *
- * @docdog persists docdog:table:invoices
- * @docdog maps-to docdog:entity:Invoice
+ * @docsdog persists docsdog:table:invoices
+ * @docsdog maps-to docsdog:entity:Invoice
  */
 final class Invoice
 {
     /**
-     * @docdog tests docdog:usecase:UC-001
+     * @docsdog tests docsdog:usecase:UC-001
      */
     public static function create(CreateInvoiceCommand $command): self
     {

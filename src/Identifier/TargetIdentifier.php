@@ -12,9 +12,9 @@ use Docsdog\DocsdogPhp\Exception\ValidationException;
  * Format: {namespace}:{kind}:{identifier}
  *
  * Examples:
- *   - docdog:usecase:UC-001
- *   - docdog:requirement:REQ-014
- *   - docdog:event:InvoiceCreated
+ *   - docsdog:usecase:UC-001
+ *   - docsdog:requirement:REQ-014
+ *   - docsdog:event:InvoiceCreated
  *   - jira:ERP-123
  *   - github:company/project#15
  */
@@ -79,11 +79,11 @@ final class TargetIdentifier implements \JsonSerializable, \Stringable
     }
 
     /**
-     * Whether this target belongs to the docdog built-in namespace.
+     * Whether this target belongs to the docsdog built-in namespace.
      */
-    public function isDocDog(): bool
+    public function isDocsDog(): bool
     {
-        return $this->namespace === 'docdog';
+        return $this->namespace === 'docsdog';
     }
 
     /**

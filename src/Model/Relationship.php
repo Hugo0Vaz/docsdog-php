@@ -10,7 +10,7 @@ use Docsdog\DocsdogPhp\Identifier\TargetIdentifier;
 use Docsdog\DocsdogPhp\Predicate;
 
 /**
- * Immutable value object representing a single DocDog relationship.
+ * Immutable value object representing a single DocsDog relationship.
  *
  * A directed edge: Source → Predicate → Target, with optional metadata.
  *
@@ -50,7 +50,7 @@ final class Relationship implements \JsonSerializable
      *   {
      *     "source": "php://...",
      *     "predicate": "implements",
-     *     "target": "docdog:...",
+     *     "target": "docsdog:...",
      *     "metadata": { ... }   // optional
      *   }
      *

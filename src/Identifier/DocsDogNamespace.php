@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Docsdog\DocsdogPhp\Identifier;
 
 /**
- * Factory for creating TargetIdentifier instances within the built-in "docdog" namespace.
+ * Factory for creating TargetIdentifier instances within the built-in "docsdog" namespace.
  *
- * Covers all standard artifact kinds defined in the DocDog specification §7.
+ * Covers all standard artifact kinds defined in the DocsDog specification §7.
  */
-final class DocDogNamespace
+final class DocsDogNamespace
 {
-    public const NAMESPACE = 'docdog';
+    public const NAMESPACE = 'docsdog';
 
     // ── Requirements & Analysis ──
 
