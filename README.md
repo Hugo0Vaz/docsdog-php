@@ -5,7 +5,7 @@ PHP implementation of the [DocDog specification](https://github.com/Hugo0Vaz/doc
 ## Installation
 
 ```bash
-composer require docdog/docsdog-php
+composer require docsdog/docsdog-php
 ```
 
 ## Annotation Format
