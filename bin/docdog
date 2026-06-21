@@ -1,0 +1,194 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+/**
+ * DocDog CLI — scans PHP source directories for @docdog annotations
+ * and produces a scan JSON file consumable by external DocDog tooling.
+ *
+ * Usage:
+ *   php bin/docdog scan [--src=<dir>] [--output=<file>] [--pretty]
+ *
+ * The output is a valid DocDog scan document per scan.schema.json.
+ */
+
+// ── Bootstrap ──────────────────────────────────────────────
+
+$possibleAutoloadPaths = [
+    __DIR__ . '/../vendor/autoload.php',
+    __DIR__ . '/../../../autoload.php',
+];
+
+$autoloadPath = null;
+foreach ($possibleAutoloadPaths as $path) {
+    if (\file_exists($path)) {
+        $autoloadPath = $path;
+        break;
+    }
+}
+
+if ($autoloadPath === null) {
+    \fwrite(\STDERR, "Error: Could not find Composer autoloader.\n");
+    \fwrite(\STDERR, "Run 'composer install' in the package directory.\n");
+    exit(1);
+}
+
+require $autoloadPath;
+
+use Docsdog\DocsdogPhp\Model\Scan;
+use Docsdog\DocsdogPhp\Scanner\PhpFileScanner;
+
+// ── CLI Argument Parsing ───────────────────────────────────
+
+function parseArgs(array $argv): array
+{
+    $options = [
+        'src' => 'src',
+        'output' => null,  // null = stdout
+        'version' => '1.0',
+        'pretty' => false,
+        'help' => false,
+    ];
+
+    foreach ($argv as $arg) {
+        if (\str_starts_with($arg, '--src=')) {
+            $options['src'] = \substr($arg, 6);
+        } elseif (\str_starts_with($arg, '--output=')) {
+            $options['output'] = \substr($arg, 9);
+        } elseif (\str_starts_with($arg, '--version=')) {
+            $options['version'] = \substr($arg, 10);
+        } elseif ($arg === '--pretty') {
+            $options['pretty'] = true;
+        } elseif ($arg === '--help' || $arg === '-h') {
+            $options['help'] = true;
+        }
+    }
+
+    return $options;
+}
+
+function showHelp(): void
+{
+    echo <<<HELP
+DocDog CLI — scan PHP code for @docdog annotations.
+
+Usage:
+  php bin/docdog scan [options]
+
+Options:
+  --src=<dir>      Source directory to scan (default: src)
+  --output=<file>  Output file path (default: stdout)
+  --version=<ver>  Scan version tag (default: 1.0)
+  --pretty         Pretty-print JSON output
+  --help, -h       Show this help message
+
+Annotation format (in PHP docblocks):
+  /**
+   * Brief description.
+   *
+   * @docdog <predicate> <namespace>:<kind>:<identifier>
+   */
+
+Examples:
+  php bin/docdog scan --src=app --output=docdog-scan.json --pretty
+  php bin/docdog scan --src=src/Application > scan.json
+
+HELP;
+}
+
+// ── File Discovery ─────────────────────────────────────────
+
+/**
+ * Recursively find all PHP files in a directory.
+ *
+ * @return list<string>
+ */
+function findPhpFiles(string $directory): array
+{
+    if (! \is_dir($directory)) {
+        \fwrite(\STDERR, "Error: Directory not found: {$directory}\n");
+        exit(1);
+    }
+
+    $files = [];
+
+    /** @var \RecursiveDirectoryIterator */
+    $iterator = new \RecursiveIteratorIterator(
+        new \RecursiveDirectoryIterator($directory, \RecursiveDirectoryIterator::SKIP_DOTS),
+    );
+
+    foreach ($iterator as $file) {
+        if ($file->isFile() && $file->getExtension() === 'php') {
+            $files[] = $file->getRealPath();
+        }
+    }
+
+    \sort($files);
+
+    return $files;
+}
+
+// ── Main ───────────────────────────────────────────────────
+
+$command = $argv[1] ?? '';
+
+if ($command !== 'scan') {
+    \fwrite(\STDERR, "Error: Unknown command '{$command}'. Use 'scan'.\n");
+    showHelp();
+    exit(1);
+}
+
+$options = parseArgs(\array_slice($argv, 2));
+
+if ($options['help']) {
+    showHelp();
+    exit(0);
+}
+
+// Discover PHP files
+$files = findPhpFiles($options['src']);
+
+\fwrite(\STDERR, \sprintf("Scanning %d PHP file(s) in %s...\n", \count($files), $options['src']));
+
+// Scan each file
+$scanner = new PhpFileScanner();
+$allRelationships = [];
+
+foreach ($files as $file) {
+    try {
+        $relationships = $scanner->scan($file);
+        if ($relationships !== []) {
+            $relPath = $file;
+            \fwrite(\STDERR, \sprintf("  %s  →  %d relationship(s)\n", $relPath, \count($relationships)));
+        }
+        \array_push($allRelationships, ...$relationships);
+    } catch (\Throwable $e) {
+        \fwrite(\STDERR, "  Warning: Skipping {$file}: {$e->getMessage()}\n");
+    }
+}
+
+// Build scan
+$scan = Scan::of($options['version'], $allRelationships);
+
+// Output
+$flags = \JSON_UNESCAPED_SLASHES;
+
+if ($options['pretty']) {
+    $flags |= \JSON_PRETTY_PRINT;
+}
+
+$json = $scan->toJson($flags);
+
+if ($options['output'] !== null) {
+    \file_put_contents($options['output'], $json . "\n");
+    \fwrite(\STDERR, \sprintf(
+        "\nWrote %d relationship(s) to %s\n",
+        \count($allRelationships),
+        $options['output'],
+    ));
+} else {
+    echo $json . "\n";
+}
+
+exit(0);

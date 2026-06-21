@@ -1,0 +1,21 @@
+{
+    "name": "docsdog/docsdog-php",
+    "description": "Documentation's best friend.",
+    "type": "library",
+    "license": "AGPL-3.0-only",
+    "autoload": {
+        "psr-4": {
+            "Docsdog\\DocsdogPhp\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Hugo0Vaz",
+            "email": "hugomartinsvaz@gmail.com"
+        }
+    ],
+    "require": {},
+    "bin": [
+        "bin/docdog"
+    ]
+}
